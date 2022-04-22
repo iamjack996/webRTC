@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+        integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+    <link rel="stylesheet" href="../css/multiplayer.css">
+    <title>Web RTC Demo</title>
+</head>
+
+<body>
+    <div id="v-table" class="container-fluid" style="margin: 10px;">
+
+        <div style="margin-bottom: 8px;">
+            <button class="btn btn-primary btn-sm" id="startBtn">開始</button>
+            <button class="btn btn-primary btn-sm" id="leaveBtn">離開</button>
+            <button class="btn btn-primary btn-sm" name="audio" id="audioBtn">關閉麥克風</button>
+            <button class="btn btn-primary btn-sm" name="video" id="videoBtn">關閉鏡頭</button>
+            <button class="btn btn-primary btn-sm" id="raiseHandBtn">舉手</button>
+            <button class="btn btn-primary btn-sm" id="shareBtn">切換分享螢幕</button>
+
+            <button class="btn btn-primary btn-sm" @click="forDev">開發測試</button>
+        </div>
+
+        <div>
+            <label>切換麥克風:</label>
+            <select id="audioSource"></select>
+        </div>
+
+        <div>
+            <label>切換攝影機:</label>
+            <select id="videoSource"></select>
+        </div>
+
+        <div>
+            <label>聊天室人數:</label>
+            <span> {{ room.count }}</span>
+        </div>
+
+        <div class="row" style="margin-bottom: 8px;">
+            <video class="col-3" muted width="480" autoplay playsinline id="localVideo"></video>
+            <video class="col-3" v-for="(row, index) in videoList" v-show="row.show" width="480" autoplay playsinline
+                :id="row.tag"></video>
+        </div>
+
+        <div class="card direct-chat direct-chat-primary" style="width: 50%;">
+            <div class="card-header ui-sortable-handle">
+                <h3 class="card-title" style="margin-bottom: -0.1rem;">對話</h3>
+            </div>
+            <div class="card-body" style="height: 300px;overflow: scroll;">
+                <div class="direct-chat-messages">
+                    <div v-for="(row, index) in msgs" class="direct-chat-msg">
+                        <div class="direct-chat-infos clearfix">
+                            <span class="direct-chat-name float-left" style="font-weight:bold;">
+                                {{ row.name }}
+                            </span>
+                            <span class="direct-chat-timestamp float-right">{{ row.time }}</span>
+                        </div>
+                        <div class="direct-chat-text">
+                            {{ row.text }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="card-footer">
+                <form onsubmit="return false;">
+                    <div class="input-group">
+                        <input type="text" id="message" placeholder="輸入對話 ..." class="form-control"
+                            @keyup.enter="sendMessage">
+                        <span class="input-group-append">
+                            <button type="button" class="btn btn-primary" @click="sendMessage">送出</button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            function socketLoad() { console.log('socket load.') }
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF"
+            crossorigin="anonymous"></script>
+        <script async src="https://cdn.socket.io/4.4.1/socket.io.min.js"
+            integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H" crossorigin="anonymous"
+            onload="socketLoad()"></script>
+        <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="../js/multiplayer.js"></script>
+
+</body>
+
+</html>
